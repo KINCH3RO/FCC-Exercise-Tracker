@@ -39,8 +39,7 @@ let Exercice = mongoose.model("exercice", exerciceSchema);
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
-  Exercice.remove({ __v: 0 });
-  User.remove({ __v: 0 });
+ 
 });
 
 
@@ -78,11 +77,7 @@ app.post("/api/exercise/new-user", function (req, res) {
 
 })
 
-app.get("/user/:id", function (req, res) {
-  User.findById(req.params.id, function (err, data) {
-    res.json(data);
-  })
-})
+
 
 
 app.post("/api/exercise/add", (req, res) => {
@@ -122,11 +117,7 @@ app.post("/api/exercise/add", (req, res) => {
   })
 
 })
-app.get("/api/exercise/result", function (req, res) {
-  Exercice.find((err, data) => {
-    res.json(data)
-  })
-})
+
 
 app.get("/api/exercise/log", function (req, res) {
 
@@ -140,7 +131,7 @@ app.get("/api/exercise/log", function (req, res) {
       } 
       else 
       {
-        let userdata=data;
+        
         let result = Exercice.find({userId})
         if (from != undefined) {
           result = result.where('date').gt(from)
@@ -166,16 +157,13 @@ app.get("/api/exercise/log", function (req, res) {
           })
        
           console.log("loging exercise data")
-          userdata["count"]=formattedDatearray.length;
-          userdata["log"]=formattedDatearray;
-          console.log(userdata.log)
-          res.json({
-            _id:userdata._id,
-            username:userdata.username,
-            count:userdata.count,
-            log:userdata.log
-
-          });
+          let responseObj={}
+          responseObj["_id"]=data._id;
+          responseObj["username"]=data.username;
+          responseObj["count"]=formattedDatearray.length;
+          responseObj["log"]=formattedDatearray;
+          
+          res.json(responseObj);
         })
       
 
