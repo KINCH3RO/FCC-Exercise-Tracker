@@ -148,14 +148,21 @@ app.get("/api/exercise/log", function (req, res) {
         }
       
         result.select({_id:0,description:1,duration:1,date:1}).exec(function (err, selectData) {
-          console.log(selectData)
+          let formattedDatearray = selectData.map((x)=>{
+            
+            return {
+              description:x.description,
+              duration:x.duration,
+              date:x.date.toDateString()
+            }
+          })
+       
           console.log("loging exercise data")
           res.json({
             _id:"5ec3c38cc530e526ad533782",
             username:username,
            count:selectData.length,
-            log:selectData
-
+            log:formattedDatearray
           });
         })
       
