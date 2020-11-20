@@ -55,18 +55,26 @@ app.get("/api/exercise/users", (req, res) => {
 app.post("/api/exercise/new-user", function (req, res) {
 
 
-  console.log("inserting user ...");
+ 
   let username = req.body.username;
-  const doc = new User({
-    username: username
+  User.findOne({username:username},function(err,data){
+    if(data !=undefined){
+      res.send("username alredy taken");
+    }else{
+      console.log("inserting user ...");
+      const doc = new User({
+        username: username
+      })
+      doc.save(function (err, data) {
+    
+        res.json({
+          username,
+          _id: data._id
+        })
+      })
+    }
   })
-  doc.save(function (err, data) {
-
-    res.json({
-      username,
-      _id: data._id
-    })
-  })
+  
 
 })
 
