@@ -46,6 +46,7 @@ app.get('/', (req, res) => {
 
 app.get("/api/exercise/users", (req, res) => {
   User.find((err, data) => {
+    if(err) console.log("error getting users")
     res.json(data)
   })
 
@@ -57,6 +58,7 @@ app.post("/api/exercise/new-user", function (req, res) {
  
   let username = req.body.username;
   User.findOne({username:username},function(err,data){
+    if(err) console.log("error adding user 1")
     if(data !=undefined){
       res.send("username alredy taken");
     }else{
@@ -65,7 +67,7 @@ app.post("/api/exercise/new-user", function (req, res) {
         username: username
       })
       doc.save(function (err, data) {
-    
+        if(err) console.log("error adding user 2")
         res.json({
           username,
           _id: data._id
@@ -84,11 +86,12 @@ app.post("/api/exercise/add", (req, res) => {
   let userId = req.body.userId;
   let description = req.body.description;
   let duration = req.body.duration;
-  console.log(req.body.date)
-  let date = new Date(req.body.date == "" ? new Date().toDateString() : req.body.date)
+
+  let date = new Date(req.body.date == "" || req.body.date==undefined   ? new Date().toDateString() : req.body.date)
   
 
   User.findById(userId, function (err, data) {
+    if(err) console.log("adding exercise 1")
     if (data == undefined) {
       res.send("there is no such user with id =" + userId);
     } else {
@@ -103,7 +106,11 @@ app.post("/api/exercise/add", (req, res) => {
       })
       doc.save(function (err, exerciceData) {
 
-
+        if(err) {
+          console.log(userId +" "+description+" "+duration+" "+req.body.date)
+          console.log("error find")
+          res.send("error") 
+          return;}
         res.json({
           _id: userId,
           username: data.username,
@@ -126,6 +133,7 @@ app.get("/api/exercise/log", function (req, res) {
   let to = req.query.to;
   let limit = req.query.limit;
   User.findById(userId, function(err, data) {
+    if(err) console.log("error logging ex 1")
       if (data == undefined) {
         res.send("unknown userID");
       } 
@@ -147,6 +155,8 @@ app.get("/api/exercise/log", function (req, res) {
         }
       
         result.select({_id:0,description:1,duration:1,date:1}).exec(function (err, selectData) {
+          if(err) console.log("error logging ex 2")
+          if(err) console.log("error")
           let formattedDatearray = selectData.map((x)=>{
             
             return {
