@@ -132,7 +132,7 @@ app.get("/api/exercise/log", function (req, res) {
       } 
       else 
       {
-        let username = data.username;
+        let userdata=data;
         let result = Exercice.find({userId})
         if (from != undefined) {
           result = result.where('date').gt(from)
@@ -158,11 +158,15 @@ app.get("/api/exercise/log", function (req, res) {
           })
        
           console.log("loging exercise data")
+          userdata["count"]=formattedDatearray.length;
+          userdata["log"]=formattedDatearray;
+          console.log(userdata.log)
           res.json({
-            _id:userId,
-            username:username,
-           count:selectData.length,
-            log:formattedDatearray
+            _id:userdata._id,
+            username:userdata.username,
+            count:userdata.count,
+            log:userdata.log
+
           });
         })
       
