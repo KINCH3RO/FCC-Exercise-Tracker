@@ -126,7 +126,8 @@ app.get("/api/exercise/log", function (req, res) {
   let from = req.query.from;
   let to = req.query.to;
   let limit = req.query.limit;
-  User.findById(userId, function(err, data) {
+  User.findById(userId)
+  .select({username:1}).exec( function(err, data) {
       if (data == undefined) {
         res.send("unknown userID");
       } 
@@ -159,8 +160,7 @@ app.get("/api/exercise/log", function (req, res) {
        
           console.log("loging exercise data")
           res.json({
-            _id:"5ec3c38cc530e526ad533782",
-            username:username,
+            data,
            count:selectData.length,
             log:formattedDatearray
           });
